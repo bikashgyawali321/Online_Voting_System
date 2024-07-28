@@ -1,8 +1,9 @@
-import Joi, { AnySchema } from "joi";
+import { AnySchema } from "joi";
+import { Joi } from "express-validation"
 
 export function VoteValidator(): AnySchema {
     return Joi.object({
-        vid: Joi.string().required(),
+        id: Joi.string().required(),
         eid: Joi.string().required(),
         cid: Joi.string().required(),
         uid: Joi.string().required(),
