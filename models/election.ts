@@ -1,9 +1,8 @@
 export interface Election {
-    id: string  //unique id of the election
-    title: string  //title or name of the election
-    description?: string // breif description of the election
-    startDate?: Date  //start date and time for the election
-    endDate?: Date //end date and time for election
-    status: string //status of the election 
-
+    electionId: string
+    title: string
+    description?: string
+    startDate?: Date
+    endDate?: Date
+    status: string
 }

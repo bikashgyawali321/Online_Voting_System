@@ -3,7 +3,7 @@ import { Joi } from "express-validation"
 
 export function ElectionValidator(): AnySchema {
     return Joi.object({
-        id: Joi.string().required(),
+        electionId: Joi.string().required(),
         title: Joi.string().required(),
         description: Joi.string().allow(null),
         startDate: Joi.date().required(),

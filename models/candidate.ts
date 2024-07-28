@@ -1,16 +1,10 @@
-export interface Candidate {
-    id: string, 
-    eid: number, 
-    fullName: string, 
-    age: number, 
-    verifyCandidateAge: boolean, 
-    candidatePhotoUrl?: string,  
-    description?: string,
-    votes?: number,
-    createdAt?: Date, 
-    updatedAt?: Date,
-    email? : string ,
-    phoneNumber?: number,
-    emailVerified?: boolean ,
-    phoneNumberVerified?: boolean
+import { User } from "./user";
+
+export interface Candidate extends User {
+    candidateId: string;
+    electionId: string;
+    description?: string;
+    votes?: number;
+    candidatePhotoUrl?: string;
+    // Additional fields specific to candidates can go here
 }
