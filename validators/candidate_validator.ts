@@ -9,5 +9,9 @@ export function CandidateValidator():AnySchema{
         votes: Joi.number().allow(null),
         createdAt: Joi.date().allow(null),
         updatedAt: Joi.date().allow(null),
+        age: Joi.number().required(),
+        verifyCandidateAge:Joi.bool().required(),
+        candidatePhotoUrl: Joi.bool().allow(null)
+
     })
 }

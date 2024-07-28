@@ -9,8 +9,9 @@ export function UserValidator(): AnySchema {
         role: Joi.string().allow(null),
         createdAt: Joi.date().allow(null),
         updatedAt: Joi.date().allow(null),
-        age: Joi.number().allow(null)
-
-
+        age: Joi.number().required(),
+        verifyUserAge: Joi.bool().required(),
+        votingCardPhotoUrl: Joi.string().required(),
+        userPhoto: Joi.string().allow(null),
     })
 }
