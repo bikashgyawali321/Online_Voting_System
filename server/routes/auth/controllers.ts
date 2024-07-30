@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { getMongoDB } from "../../services/mongo";
 import { User } from "../../models/user";
@@ -15,6 +15,7 @@ if (!Secret_Key) {
 
 const login = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
+    console.log(req.body);
 
     if (!username || !email || !password) {
         return res.status(400).json({ message: 'Username ,email and password are required.' });
@@ -46,8 +47,13 @@ const login = async (req: Request, res: Response) => {
 
 }
 
-const register = async (req: Request, res: Response) => {
-    const { username, fullName, email, password, role, isEmailVerified, phoneNumber, isAdmin, age, isPhoneNumberVerified, userPhoto } = req.body;
+const registerUser = async (req: Request, res: Response) => {
+    console.log("hit")
+
+    const { username, password, email, fullName, role, isEmailVerified, phoneNumber, isAdmin, age, isPhoneNumberVerified, userPhoto } = req.body.user;
+
+    console.log(username);
+
     if (!username || !password || !email || !fullName) {
         return res.status(400).json({ message: 'Username,password ,email and fullname are required' });
     }
@@ -68,6 +74,7 @@ const register = async (req: Request, res: Response) => {
 
         };
         await userCollections.insertOne(newUser);
+        console.log(newUser);
         return res.status(201).json({ message: "User registered successfully", user: newUser });
 
     }
@@ -77,5 +84,5 @@ const register = async (req: Request, res: Response) => {
     }
 }
 export default {
-    login, register
+    login, registerUser
 }

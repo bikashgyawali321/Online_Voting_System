@@ -17,7 +17,7 @@ const registerUser = {
 
 const registerCandidate = {
     body: Joi.object({
-        candidate: CandidateValidator().required(), 
+        candidate: CandidateValidator().required(),
     }),
 };
 
@@ -25,4 +25,4 @@ const registerVoter = {
     body: Joi.object({ voter: VoterValidator().required() }),
 };
 
-export { login, registerUser as register, registerCandidate, registerVoter };
+export default { login, registerUser, registerCandidate, registerVoter };

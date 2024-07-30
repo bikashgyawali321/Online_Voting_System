@@ -13,6 +13,7 @@ export function UserValidator(): AnySchema {
         isEmailVerified: Joi.boolean().required(),
         phoneNumber: Joi.string().allow(null),
         isPhoneNumberVerified: Joi.boolean().allow(null),
+        userPhoto: Joi.string().optional(),
         createdAt: Joi.date().allow(null),
         updatedAt: Joi.date().allow(null),
         isAdmin: Joi.bool().required(),
