@@ -13,7 +13,7 @@ if (!Secret_Key) {
     throw new Error('JWT_SECRET_ACCESS_TOKEN_KEY is not defined in the environment variables.');
 }
 
-export const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -47,5 +47,35 @@ export const login = async (req: Request, res: Response) => {
 }
 
 const register = async (req: Request, res: Response) => {
+    const { username, fullName, email, password, role, isEmailVerified, phoneNumber, isAdmin, age, isPhoneNumberVerified, userPhoto } = req.body;
+    if (!username || !password || !email || !fullName) {
+        return res.status(400).json({ message: 'Username,password ,email and fullname are required' });
+    }
+    try {
+        const db = getMongoDB();
+        const userCollections = db.collection<User>('users');
+        //check if the email or username already exists
+        const existingUser = await userCollections.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(400).json({ message: "username or email already exists" });
 
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //create new user
+        const newUser: User = {
+            username, fullName, email, password: hashedPassword, role: role || 'guest', age, isEmailVerified, phoneNumber, isPhoneNumberVerified, isAdmin: role === 'admin', createdAt: new Date(), updatedAt: new Date(), userPhoto
+
+        };
+        await userCollections.insertOne(newUser);
+        return res.status(201).json({ message: "User registered successfully", user: newUser });
+
+    }
+    catch (e) {
+        console.log("user registration error: ", e);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+export default {
+    login, register
 }

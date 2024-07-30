@@ -3,7 +3,7 @@ import { Joi } from "express-validation";
 
 export function UserValidator(): AnySchema {
     return Joi.object({
-        id: Joi.number().integer().required(),
+        id: Joi.number().integer().allow(null),
         username: Joi.string().required(),
         fullName: Joi.string().required(),
         email: Joi.string().email().required(),
@@ -15,5 +15,6 @@ export function UserValidator(): AnySchema {
         isPhoneNumberVerified: Joi.boolean().allow(null),
         createdAt: Joi.date().allow(null),
         updatedAt: Joi.date().allow(null),
+        isAdmin: Joi.bool().required(),
     });
 }

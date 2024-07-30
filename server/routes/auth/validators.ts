@@ -7,6 +7,7 @@ const login = {
     body: Joi.object({
         username: Joi.string().required(),
         password: Joi.string().required(),
+        email: Joi.string().required()
     }),
 };
 
@@ -16,7 +17,7 @@ const registerUser = {
 
 const registerCandidate = {
     body: Joi.object({
-        candidate: CandidateValidator().required(), // Fixed typo
+        candidate: CandidateValidator().required(), 
     }),
 };
 

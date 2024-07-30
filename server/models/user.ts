@@ -1,5 +1,5 @@
 export interface User {
-    id: number
+    id?: number
     username: string
     fullName: string
     email: string
@@ -12,4 +12,5 @@ export interface User {
     createdAt?: Date
     updatedAt?: Date
     userPhoto?: string
+    isAdmin: boolean,
 }
