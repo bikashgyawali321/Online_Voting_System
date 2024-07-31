@@ -99,12 +99,12 @@ const getMe = async (req: Request, res: Response) => {
         const userCollections = db.collection<User>('users');
 
         const user = await userCollections.findOne({ uid });
-        console.log(user);
+
 
         if (!user) {
             return res.status(401).json({ message: "user not found" });
         }
-
+              console.log(user);
         return res.status(200).json({ user: user });
 
 
