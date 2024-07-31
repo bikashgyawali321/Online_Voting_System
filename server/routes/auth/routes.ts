@@ -25,5 +25,8 @@ authRoutes.post('/register',
     authControllers.registerUser
 );
 
+authRoutes.get('/getMe',
+    authControllers.getMe,
+);
 
 export default authRoutes;
