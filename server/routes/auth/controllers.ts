@@ -63,7 +63,7 @@ const registerUser = async (req: Request, res: Response) => {
         const db = getMongoDB();
         const userCollections = db.collection<User>('users');
 
-      
+
         const existingUser = await userCollections.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             return res.status(400).json({ message: "Username or email already exists" });
@@ -82,7 +82,7 @@ const registerUser = async (req: Request, res: Response) => {
             age,
             isEmailVerified,
             phoneNumber,
-            isPhoneNumberVerified,
+            isPhoneNumberVerified: phoneNumber.length === 10,
             isAdmin: role === 'admin',
             createdAt: new Date(),
             updatedAt: new Date(),
