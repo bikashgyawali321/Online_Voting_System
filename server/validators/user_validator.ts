@@ -3,7 +3,7 @@ import { Joi } from "express-validation";
 
 export function UserValidator(): AnySchema {
     return Joi.object({
-        id: Joi.number().integer().allow(null),
+        id: Joi.string().allow(null),
         username: Joi.string().required(),
         fullName: Joi.string().required(),
         email: Joi.string().email().required(),

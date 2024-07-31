@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { getMongoDB } from "../../services/mongo";
 import { User } from "../../models/user";
 import dotenv from 'dotenv';
+import { ObjectId } from "mongodb";
 
 
 dotenv.config();
@@ -15,7 +16,7 @@ if (!Secret_Key) {
 
 const login = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
-    console.log(req.body);
+
 
     if (!username || !email || !password) {
         return res.status(400).json({ message: 'Username ,email and password are required.' });
@@ -35,7 +36,7 @@ const login = async (req: Request, res: Response) => {
         }
 
         const accessToken = jwt.sign({ id: user.id, username: user.username, role: user.role },
-            Secret_Key
+            Secret_Key, { algorithm: 'HS256', expiresIn: '1h' }
         );
         return res.status(200).json({ message: 'Login successfull', accessToken });
     }
@@ -48,73 +49,94 @@ const login = async (req: Request, res: Response) => {
 }
 
 const registerUser = async (req: Request, res: Response) => {
-    console.log("hit")
+    console.log("hit");
 
     const { username, password, email, fullName, role, isEmailVerified, phoneNumber, isAdmin, age, isPhoneNumberVerified, userPhoto } = req.body.user;
 
     console.log(username);
 
     if (!username || !password || !email || !fullName) {
-        return res.status(400).json({ message: 'Username,password ,email and fullname are required' });
+        return res.status(400).json({ message: 'Username, password, email, and full name are required' });
     }
+
     try {
         const db = getMongoDB();
         const userCollections = db.collection<User>('users');
-        //check if the email or username already exists
+
+      
         const existingUser = await userCollections.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
-            return res.status(400).json({ message: "username or email already exists" });
-
+            return res.status(400).json({ message: "Username or email already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        //create new user
-        const newUser: User = {
-            username, fullName, email, password: hashedPassword, role: role || 'guest', age, isEmailVerified, phoneNumber, isPhoneNumberVerified, isAdmin: role === 'admin', createdAt: new Date(), updatedAt: new Date(), userPhoto
 
+
+        const newUser: User = {
+            id: new ObjectId().toHexString(),
+            username,
+            fullName,
+            email,
+            password: hashedPassword,
+            role: role || 'guest',
+            age,
+            isEmailVerified,
+            phoneNumber,
+            isPhoneNumberVerified,
+            isAdmin: role === 'admin',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            userPhoto
         };
+
         await userCollections.insertOne(newUser);
         console.log(newUser);
         return res.status(201).json({ message: "User registered successfully", user: newUser });
 
-    }
-    catch (e) {
-        console.log("user registration error: ", e);
+    } catch (e) {
+        console.log("User registration error: ", e);
         return res.status(500).json({ message: "Internal server error" });
     }
 }
 
 const getMe = async (req: Request, res: Response) => {
+    const token = req.header('Authorization')?.split(' ')[1];
 
-
-    const token = req.headers["token"] as string;
     if (!token) {
+        console.error('No authorization token provided.');
         return res.status(401).json({ message: "Authorization token is needed" });
-
     }
+
     try {
-        const decodedToken = jwt.verify(token, Secret_Key) as jwt.JwtPayload;
+        console.log('Verifying token...');
+        const decodedToken = jwt.verify(token, Secret_Key, { algorithms: ['HS256'] }) as jwt.JwtPayload;;
+
+
+        console.log('Token verified. Decoded token:', decodedToken);
         const uid = decodedToken.id;
+        if (!uid) {
+            console.error('No user ID found in the token.');
+            return res.status(401).json({ message: "Invalid token" });
+        }
+
+        console.log('Fetching user with ID:', uid);
         const db = getMongoDB();
         const userCollections = db.collection<User>('users');
-
-        const user = await userCollections.findOne({ uid });
-
+        const user = await userCollections.findOne({ id: uid });
 
         if (!user) {
-            return res.status(401).json({ message: "user not found" });
+            console.error('User not found with ID:', uid);
+            return res.status(401).json({ message: "User not found" });
         }
-              console.log(user);
-        return res.status(200).json({ user: user });
 
-
-    }
-    catch (error) {
+        console.log('User found:', user);
+        return res.status(200).json({ user });
+    } catch (error) {
+        console.error('Error during getMe execution:', error);
         return res.status(500).json({ message: "Internal server error" });
     }
-
 }
 
 export default {
-    login, registerUser,getMe
+    login, registerUser, getMe
 }
