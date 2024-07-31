@@ -83,6 +83,38 @@ const registerUser = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+const getMe = async (req: Request, res: Response) => {
+
+
+    const token = req.headers["token"] as string;
+    if (!token) {
+        return res.status(401).json({ message: "Authorization token is needed" });
+
+    }
+    try {
+        const decodedToken = jwt.verify(token, Secret_Key) as jwt.JwtPayload;
+        const uid = decodedToken.id;
+        const db = getMongoDB();
+        const userCollections = db.collection<User>('users');
+
+        const user = await userCollections.findOne({ uid });
+        console.log(user);
+
+        if (!user) {
+            return res.status(401).json({ message: "user not found" });
+        }
+
+        return res.status(200).json({ user: user });
+
+
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
+
 export default {
-    login, registerUser
+    login, registerUser,getMe
 }
