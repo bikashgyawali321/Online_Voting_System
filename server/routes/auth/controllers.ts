@@ -7,11 +7,17 @@ import dotenv from 'dotenv';
 import { ObjectId } from "mongodb";
 
 
+
 dotenv.config();
 
-const Secret_Key = process.env.JWT_SECRET_ACCESS_TOKEN_KEY;
-if (!Secret_Key) {
+const Secret_Access_Token_Key = process.env.JWT_SECRET_ACCESS_TOKEN_KEY;
+const Secret_Refresh_Token_Key = process.env.JWT_SECRET_REFRESH_TOKEN_KEY;
+
+if (!Secret_Access_Token_Key) {
     throw new Error('JWT_SECRET_ACCESS_TOKEN_KEY is not defined in the environment variables.');
+}
+if (!Secret_Refresh_Token_Key) {
+    throw new Error("JWT_SECRET_REFRESH_TOKEM_KEY is not defined in the environment variables");
 }
 
 const login = async (req: Request, res: Response) => {
@@ -36,9 +42,15 @@ const login = async (req: Request, res: Response) => {
         }
 
         const accessToken = jwt.sign({ id: user.id, username: user.username, role: user.role },
-            Secret_Key, { algorithm: 'HS256', expiresIn: '1h' }
+            Secret_Access_Token_Key, { algorithm: 'HS256', expiresIn: '1h' }
         );
-        return res.status(200).json({ message: 'Login successfull', accessToken });
+        const refreshToken = jwt.sign({ id: user.id, username: user.username, role: user.role },
+            Secret_Refresh_Token_Key, { algorithm: 'HS256', expiresIn: '1h' }
+
+
+
+        );
+        return res.status(200).json({ message: 'Login successfull', accessToken, refreshToken });
     }
     catch (error) {
         console.error('Login error:', error);
@@ -109,7 +121,8 @@ const getMe = async (req: Request, res: Response) => {
 
     try {
         console.log('Verifying token...');
-        const decodedToken = jwt.verify(token, Secret_Key, { algorithms: ['HS256'] }) as jwt.JwtPayload;;
+        const decodedToken = jwt.verify(token, Secret_Access_Token_Key, { algorithms: ['HS256'] }) as jwt.JwtPayload;
+
 
 
         console.log('Token verified. Decoded token:', decodedToken);
@@ -137,6 +150,27 @@ const getMe = async (req: Request, res: Response) => {
     }
 }
 
+const refreshToken = async (req: Request, res: Response) => {
+
+
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Refresh token iis required' })
+    }
+
+    try {
+        const decodedToken = jwt.verify(refreshToken, Secret_Refresh_Token_Key, { algorithms: ['HS256'] }) as jwt.JwtPayload;
+        const accessToken = jwt.sign({ id: decodedToken.id, username: decodedToken.username, role: decodedToken.role },
+            Secret_Access_Token_Key, { algorithm: 'HS256', expiresIn: '1h' }
+        );
+        return res.status(200).json({ accessToken });
+    }
+    catch (error) {
+        console.log('Error verifying refresh token:', error);
+        return res.status(401).json({ message: 'Invalid refresh token' })
+    }
+}
+
 export default {
-    login, registerUser, getMe
+    login, registerUser, getMe, refreshToken
 }

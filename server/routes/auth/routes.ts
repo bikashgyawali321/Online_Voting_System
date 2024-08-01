@@ -28,5 +28,9 @@ authRoutes.post('/register',
 authRoutes.get('/getMe',
     authControllers.getMe,
 );
+authRoutes.post('/refreshToken',
+
+    authControllers.refreshToken
+);
 
 export default authRoutes;
