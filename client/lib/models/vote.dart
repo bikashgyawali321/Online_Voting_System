@@ -19,4 +19,13 @@ class Vote {
         eid: json['eid'],
         uid: json['uid']);
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'voteId': voteId,
+      'cid': cid,
+      'createdAt': createdAt,
+      'eid': eid,
+      'uid': uid,
+    };
+  }
 }
