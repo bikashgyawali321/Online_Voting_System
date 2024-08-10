@@ -91,5 +91,5 @@ const castVote = async (req: Request, res: Response) => {
 }
 export default {
 
-    castVote
+     castVote
 };
