@@ -8,6 +8,8 @@ const castVote = {
     }),
 };
 
+const countVotes = {
+    params: Joi.object({ electionId: Joi.string().required() }),
+};
 
-
-export default { castVote };
+export default { castVote ,countVotes};

@@ -3,7 +3,6 @@ import { validate } from "express-validation";
 import votingValidators from "./validators";
 import votingControllers from "./controllers"
 
-
 const votingRoutes = express.Router();
 
 //cast vote routes
@@ -13,8 +12,9 @@ votingRoutes.post('/castVote',
 
 );
 votingRoutes.get('/countVotes',
+    validate(votingValidators.countVotes, {}, { abortEarly: false }),
+    votingControllers.countVotes
 
-    
 )
 export default votingRoutes;
 
