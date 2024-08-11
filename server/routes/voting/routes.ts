@@ -12,5 +12,9 @@ votingRoutes.post('/castVote',
     votingControllers.castVote
 
 );
+votingRoutes.get('/countVotes',
+
+    
+)
 export default votingRoutes;
 

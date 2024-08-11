@@ -41,11 +41,24 @@ const login = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Invalid password" });
         }
 
-        const accessToken = jwt.sign({ id: user.id, username: user.username, role: user.role },
-            Secret_Access_Token_Key, { algorithm: 'HS256', expiresIn: '1h' }
+        const accessToken = jwt.sign({
+            id: user.id,
+            username: user.username,
+            role: user.role
+        },
+            Secret_Access_Token_Key,
+            { algorithm: 'HS256', expiresIn: '1h' }
         );
-        const refreshToken = jwt.sign({ id: user.id, username: user.username, role: user.role },
-            Secret_Refresh_Token_Key, { algorithm: 'HS256', expiresIn: '1h' }
+        const refreshToken = jwt.sign({
+            id: user.id,
+            username: user.username,
+            role: user.role
+        },
+            Secret_Refresh_Token_Key,
+            {
+                algorithm: 'HS256',
+                expiresIn: '1h'
+            }
 
 
 
@@ -63,11 +76,25 @@ const login = async (req: Request, res: Response) => {
 const registerUser = async (req: Request, res: Response) => {
     console.log("hit");
 
-    const { username, password, email, fullName, role, isEmailVerified, phoneNumber, isAdmin, age, isPhoneNumberVerified, userPhoto } = req.body.user;
+    const { username,
+        password,
+        email,
+        fullName,
+        role,
+        isEmailVerified,
+        phoneNumber,
+        isAdmin,
+        age,
+        isPhoneNumberVerified,
+        userPhoto
+    } = req.body.user;
 
     console.log(username);
 
-    if (!username || !password || !email || !fullName) {
+    if (!username ||
+        !password ||
+        !email ||
+        !fullName) {
         return res.status(400).json({ message: 'Username, password, email, and full name are required' });
     }
 

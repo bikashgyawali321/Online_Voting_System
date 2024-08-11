@@ -89,7 +89,41 @@ const castVote = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+const countVotes = async (req: Request, res: Response) => {
+    const { electionId } = req.params;
+
+    if (!electionId) {
+        return res.status(400).json({ message: "Election id is required" });
+
+        try {
+
+            const db = getMongoDB();
+            const candidateCollection = db.collection<Candidate>("candidates");
+
+
+            //aggregrate votes count
+
+            const votesCounts = await candidateCollection.aggregate([{ $match: { electionId } },
+            { project: { candidateId: 1, votes: 1 } },
+            { sort: { votes: -1 } }
+
+
+            ]).toArray();
+            if (votesCounts.length == 0) {
+                return res.status(404).json({ message: "No candidates found for the election" });
+            }
+
+            return res.status(200).json({ votesCounts });
+        } catch (error) {
+            console.log("Error while getting the vote counts", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+
+    }
+}
+
 export default {
 
-     castVote
+    castVote,
+    countVotes
 };
