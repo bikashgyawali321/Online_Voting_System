@@ -10,7 +10,10 @@ import { ObjectId } from "mongodb";
 
 
 const castVote = async (req: Request, res: Response) => {
-    const { voterId, candidateId, electionId } = req.body;
+
+    const voterId = req.params['voterId'] as string;
+    const candidateId = req.params['candidateId'] as string;
+    const electionId = req.params['electionId'] as string;
 
     if (!voterId || !candidateId || !electionId) {
         return res.status(400).json({ message: "Voter ID, Candidate ID ,and Election Id are required " })

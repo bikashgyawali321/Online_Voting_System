@@ -4,8 +4,8 @@ import { User } from "../../models/user";
 import { ObjectId } from "mongodb";
 
 const assignRole = async (req: Request, res: Response) => {
-    const adminId = req.headers['adminId'] as string;
-    const userId = req.body['uid'] as string;
+    const adminId = req.params['adminId'] as string;
+    const userId = req.params['uid'] as string;
     const role = req.body['roles'] as string;
 
     if (!userId || !role) {

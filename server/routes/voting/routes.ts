@@ -6,7 +6,7 @@ import votingControllers from "./controllers"
 const votingRoutes = express.Router();
 
 //cast vote routes
-votingRoutes.post('/castVote',
+votingRoutes.post('/castVote/:voterId/:candidateId/:electionId',
     validate(votingValidators.castVote, {}, { abortEarly: false }),
     votingControllers.castVote
 

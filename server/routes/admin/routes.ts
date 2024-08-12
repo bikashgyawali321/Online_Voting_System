@@ -6,7 +6,7 @@ import adminValidators from './validators';
 
 const adminRoutes = express.Router();
 
-adminRoutes.put('/assignRole', validate(adminValidators.assignRole, {}, { abortEarly: false }),
+adminRoutes.put('/assignRole/:adminId/:userId', validate(adminValidators.assignRole, {}, { abortEarly: false }),
     adminControllers.assignRole
 );
 export default adminRoutes
