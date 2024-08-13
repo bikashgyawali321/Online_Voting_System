@@ -1,10 +1,12 @@
+import { Roles } from "./roles"
+
 export interface User {
     id?: string
     username: string
     fullName: string
     email: string
     password: string
-    role: string // "guest", "admin", "moderator", "voter", etc.
+    role: Roles
     age?: number
     isEmailVerified: boolean
     phoneNumber?: string
@@ -12,5 +14,5 @@ export interface User {
     createdAt?: Date
     updatedAt?: Date
     userPhoto?: string
-    isAdmin: boolean,
+
 }

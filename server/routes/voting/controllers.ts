@@ -7,6 +7,7 @@ import { Candidate } from "../../models/candidate";
 import { Election } from "../../models/election";
 import { Vote } from "../../models/vote";
 import { ObjectId } from "mongodb";
+import { Roles } from "../../models/roles";
 
 
 const castVote = async (req: Request, res: Response) => {
@@ -33,7 +34,7 @@ const castVote = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Voter not found' });
         }
 
-        if (voter.role !== 'voter' || !voter.eligibleToVote) {
+        if (voter.role == Roles.ADMIN || !voter.eligibleToVote) {
             return res.status(403).json({ message: 'Voter is not eligible to vote' });
         }
 
